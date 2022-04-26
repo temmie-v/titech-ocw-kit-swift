@@ -3,7 +3,7 @@ import XCTest
 
 final class TitechOCWKitTests: XCTestCase {
     func testFetchOCWCourseFor202201977() async throws {
-        let course = try await TitechOCW.fetchOCWCourse(courseId: "202201977")
+        let course = try await TitechOCW().fetchOCWCourse(courseId: "202201977")
         
         XCTAssertEqual(
             course,
@@ -19,7 +19,7 @@ final class TitechOCWKitTests: XCTestCase {
     }
     
     func testFetchOCWCourseFor202206894() async throws {
-        let course = try await TitechOCW.fetchOCWCourse(courseId: "202206894")
+        let course = try await TitechOCW().fetchOCWCourse(courseId: "202206894")
         
         XCTAssertEqual(
             course,

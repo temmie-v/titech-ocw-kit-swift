@@ -1,12 +1,24 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Kanna
 
 enum TitechOCWError: Error {
     case invalidOCWCourseHtml
 }
 
-public enum TitechOCW {
-    public static func fetchOCWCourse(courseId: String) async throws -> OCWCourse {
+public struct TitechOCW {
+    public static let defaultUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1"
+    private let urlSession: URLSession
+    private let userAgent: String
+    
+    public init(urlSession: URLSession = .shared, userAgent: String = TitechOCW.defaultUserAgent) {
+        self.urlSession = urlSession
+        self.userAgent = userAgent
+    }
+
+    public func fetchOCWCourse(courseId: String) async throws -> OCWCourse {
         let data = try await fetchData(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&GakubuCD=2&GakkaCD=321700&KeiCD=17&KougiCD=\(courseId)&Nendo=2022&lang=JA&vid=03")!)
         
         let html = try HTML(html: data, encoding: .utf8)
@@ -40,10 +52,17 @@ public enum TitechOCW {
         return OCWCourse(nameJa: titleArr[0][0], nameEn: titleArr[0][1], periods: periods)
     }
     
-    static func fetchData(url: URL) async throws -> Data {
+    func fetchData(url: URL) async throws -> Data {
+        var reqest = URLRequest(url: url)
+        reqest.allHTTPHeaderFields = [
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Encoding": "br, gzip, deflate",
+            "Accept-Language": "ja-jp",
+            "User-Agent" : userAgent
+        ]
         #if canImport(FoundationNetworking)
         return try await withCheckedThrowingContinuation { continuation in
-            URLSession.shared.dataTask(with: url) { data, _, error in
+            urlSession.dataTask(with: url) { data, _, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 }
@@ -51,7 +70,7 @@ public enum TitechOCW {
             }.resume()
         }
         #else
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await urlSession.data(for: reqest)
         return data
         #endif
     }
@@ -71,15 +90,15 @@ public struct OCWCoursePeriod: Equatable {
     public let location: String
 }
 
-public enum DayOfWeek: Int, Codable, CaseIterable, Equatable {
-    case unknown = 0
-    case sunday = 1
-    case monday = 2
-    case tuesday = 3
-    case wednesday = 4
-    case thursday = 5
-    case friday = 6
-    case saturday = 7
+public enum DayOfWeek: Codable, CaseIterable, Equatable {
+    case unknown
+    case sunday
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
 
     static func generateFromJapanese(str: String) -> DayOfWeek {
         if str.contains("日") {
