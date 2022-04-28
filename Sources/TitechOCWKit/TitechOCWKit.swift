@@ -77,28 +77,28 @@ public struct TitechOCW {
 }
 
 
-public struct OCWCourse: Equatable {
+public struct OCWCourse: Equatable, Codable {
     public let nameJa: String
     public let nameEn: String
     public let periods: [OCWCoursePeriod]
 }
 
-public struct OCWCoursePeriod: Equatable {
+public struct OCWCoursePeriod: Equatable, Codable {
     public let day: DayOfWeek
     public let start: Int
     public let end: Int
     public let location: String
 }
 
-public enum DayOfWeek: Codable, CaseIterable, Equatable {
-    case unknown
-    case sunday
-    case monday
-    case tuesday
-    case wednesday
-    case thursday
-    case friday
-    case saturday
+public enum DayOfWeek: Int, Codable, CaseIterable, Equatable {
+    case unknown = 0
+    case sunday = 1
+    case monday = 2
+    case tuesday = 3
+    case wednesday = 4
+    case thursday = 5
+    case friday = 6
+    case saturday = 7
 
     static func generateFromJapanese(str: String) -> DayOfWeek {
         if str.contains("日") {
