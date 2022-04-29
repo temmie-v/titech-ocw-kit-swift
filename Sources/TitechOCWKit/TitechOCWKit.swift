@@ -19,7 +19,7 @@ public struct TitechOCW {
     }
 
     public func fetchOCWCourse(courseId: String) async throws -> OCWCourse {
-        let data = try await fetchData(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&GakubuCD=2&GakkaCD=321700&KeiCD=17&KougiCD=\(courseId)&Nendo=2022&lang=JA&vid=03")!)
+        let data = try await fetchData(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&JWC=\(courseId)")!)
         
         let html = try HTML(html: data, encoding: .utf8)
         
