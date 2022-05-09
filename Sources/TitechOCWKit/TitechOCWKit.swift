@@ -65,8 +65,9 @@ public struct TitechOCW {
             urlSession.dataTask(with: url) { data, _, error in
                 if let error = error {
                     continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: data ?? Data())
                 }
-                continuation.resume(returning: data ?? Data())
             }.resume()
         }
         #else
