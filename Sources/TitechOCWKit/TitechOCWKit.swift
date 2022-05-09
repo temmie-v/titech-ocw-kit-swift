@@ -66,7 +66,7 @@ public struct TitechOCW {
                 if let error = error {
                     continuation.resume(throwing: error)
                 }
-                continuation.resume(returning: data!)
+                continuation.resume(returning: data ?? Data())
             }.resume()
         }
         #else
