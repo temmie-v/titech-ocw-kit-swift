@@ -2,7 +2,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import Kanna
+import SwiftSoup
 
 enum TitechOCWError: Error {
     case invalidOCWCourseHtml
@@ -21,25 +21,23 @@ public struct TitechOCW {
     public func fetchOCWCourse(courseId: String) async throws -> OCWCourse {
         let data = try await fetchData(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&JWC=\(courseId)")!)
         
-        let html = try HTML(html: data, encoding: .utf8)
+        let doc: Document = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
         
-        let titleString = html.css("div.page-title-area h3")
-            .compactMap {
-                $0.innerHTML?.trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-            .first
-        guard let titleArr = titleString?.matches(".+　(.+)   (.+)") else {
+        let titleString = try doc
+            .select("div.page-title-area h3")
+            .html()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard let titleArr = titleString.matches(".+　(.+)&nbsp;&nbsp;&nbsp;(.+)"), titleArr.count == 1, titleArr[0].count == 2 else {
             throw TitechOCWError.invalidOCWCourseHtml
         }
-            
-        
-        let periodString = html.css("dd.place")
-            .compactMap {
-                $0.innerHTML?.trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-            .first
-        let periodRegexpResutl = periodString?.matches("(.)(\\d+)-(\\d+)(?:\\(([^)]*)\\))?") ?? []
-        
+
+        let periodString = try doc
+            .select("dd.place")
+            .html()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let periodRegexpResutl = periodString.matches("(.)(\\d+)-(\\d+)(?:\\(([^)]*)\\))?") ?? []
+
         let periods = periodRegexpResutl.map { result -> OCWCoursePeriod in
             OCWCoursePeriod(
                 day: DayOfWeek.generateFromJapanese(str: result[0]),
@@ -62,7 +60,7 @@ public struct TitechOCW {
         ]
         #if canImport(FoundationNetworking)
         return try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: url) { data, _, error in
+            urlSession.dataTask(with: reqest) { data, _, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
