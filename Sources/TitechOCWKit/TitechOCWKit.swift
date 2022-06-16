@@ -36,9 +36,9 @@ public struct TitechOCW {
             .select("dd.place")
             .html()
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        let periodRegexpResutl = periodString.matches("(.)(\\d+)-(\\d+)(?:\\(([^)]*)\\))?") ?? []
+        let periodRegexpResult = periodString.matches("(.)(\\d+)-(\\d+)(?:\\(([^)]*)\\))?") ?? []
 
-        let periods = periodRegexpResutl.map { result -> OCWCoursePeriod in
+        let periods = periodRegexpResult.map { result -> OCWCoursePeriod in
             OCWCoursePeriod(
                 day: DayOfWeek.generateFromJapanese(str: result[0]),
                 start: Int(result[1]) ?? -1,
@@ -47,7 +47,34 @@ public struct TitechOCW {
             )
         }
         
-        return OCWCourse(nameJa: titleArr[0][0], nameEn: titleArr[0][1], periods: periods)
+        let dds = try doc
+            .select("dl.dl-para-l dd")
+        
+        let termString = try dds[3].html().trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let quarters: [Int]
+
+        if termString.contains("-") {
+            if let termRegexpResult = termString.matches("(\\d+)-(\\d+)Q") {
+                let start = Int(termRegexpResult[0][0])!
+                let end = Int(termRegexpResult[0][1])!
+                
+                quarters = (start ... end).map { $0 }
+            } else {
+                quarters = []
+            }
+        } else {
+            quarters = [Int(termString.replacingOccurrences(of: "Q", with: ""))!]
+        }
+        
+        return OCWCourse(
+            nameJa: titleArr[0][0],
+            nameEn: titleArr[0][1],
+            periods: periods,
+            terms: quarters.map {
+                OCWCourseTerm(year: 2022, quarter: $0)
+            }
+        )
     }
     
     func fetchData(url: URL) async throws -> Data {
@@ -80,6 +107,12 @@ public struct OCWCourse: Equatable, Codable {
     public let nameJa: String
     public let nameEn: String
     public let periods: [OCWCoursePeriod]
+    public let terms: [OCWCourseTerm]
+}
+
+public struct OCWCourseTerm: Equatable, Codable {
+    public let year: Int
+    public let quarter: Int
 }
 
 public struct OCWCoursePeriod: Equatable, Codable {
