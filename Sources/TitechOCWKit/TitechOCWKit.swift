@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 import SwiftSoup
 
-enum TitechOCWError: Error {
+public enum TitechOCWError: Error {
     case invalidOCWCourseHtml
 }
 
