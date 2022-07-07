@@ -63,6 +63,15 @@ public struct TitechOCW {
             } else {
                 quarters = []
             }
+        } else if termString.contains("・") {
+            if let termRegexpResult = termString.matches("(\\d+)・(\\d+)Q") {
+                let q1 = Int(termRegexpResult[0][0])!
+                let q2 = Int(termRegexpResult[0][1])!
+                
+                quarters = [q1, q2]
+            } else {
+                quarters = []
+            }
         } else {
             quarters = [Int(termString.replacingOccurrences(of: "Q", with: ""))!]
         }

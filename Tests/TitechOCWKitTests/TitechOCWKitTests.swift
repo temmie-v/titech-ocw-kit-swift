@@ -58,4 +58,23 @@ final class TitechOCWKitTests: XCTestCase {
             )
         )
     }
+
+    func testFetchOCWCourseFor202202559() async throws {
+        let course = try await TitechOCW().fetchOCWCourse(courseId: "202202559")
+        
+        XCTAssertEqual(
+            course,
+            OCWCourse(
+                nameJa: "建築設計製図第三",
+                nameEn: "Architectural Design and Drawing III",
+                periods: [
+                    .init(day: .tuesday, start: 2, end: 4, location: "建築製図室, W9-511設計製図室"),
+                    .init(day: .thursday, start: 5, end: 7, location: "建築製図室, W9-511設計製図室")],
+                terms: [
+                    .init(year: 2022, quarter: 1),
+                    .init(year: 2022, quarter: 3)
+                ]
+            )
+        )
+    }
 }
