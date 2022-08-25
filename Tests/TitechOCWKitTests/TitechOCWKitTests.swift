@@ -3,7 +3,8 @@ import XCTest
 
 final class TitechOCWKitTests: XCTestCase {
     func testFetchOCWCourseFor202201977() async throws {
-        let course = try await TitechOCW().fetchOCWCourse(courseId: "202201977")
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202201977", withExtension: "html")!)
+        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202201977")
         
         XCTAssertEqual(
             course,
@@ -22,7 +23,8 @@ final class TitechOCWKitTests: XCTestCase {
     }
     
     func testFetchOCWCourseFor202206894() async throws {
-        let course = try await TitechOCW().fetchOCWCourse(courseId: "202206894")
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202206894", withExtension: "html")!)
+        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202206894")
         
         XCTAssertEqual(
             course,
@@ -41,7 +43,8 @@ final class TitechOCWKitTests: XCTestCase {
     }
     
     func testFetchOCWCourseFor202200304() async throws {
-        let course = try await TitechOCW().fetchOCWCourse(courseId: "202200304")
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202200304", withExtension: "html")!)
+        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202200304")
         
         XCTAssertEqual(
             course,
@@ -60,7 +63,8 @@ final class TitechOCWKitTests: XCTestCase {
     }
 
     func testFetchOCWCourseFor202202559() async throws {
-        let course = try await TitechOCW().fetchOCWCourse(courseId: "202202559")
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202202559", withExtension: "html")!)
+        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202202559")
         
         XCTAssertEqual(
             course,
@@ -68,8 +72,8 @@ final class TitechOCWKitTests: XCTestCase {
                 nameJa: "建築設計製図第三",
                 nameEn: "Architectural Design and Drawing III",
                 periods: [
-                    .init(day: .tuesday, start: 2, end: 4, location: "建築製図室, W9-511設計製図室"),
-                    .init(day: .thursday, start: 5, end: 7, location: "建築製図室, W9-511設計製図室")],
+                    .init(day: .tuesday, start: 2, end: 4, location: "建築製図室W9-511設計製図室"),
+                    .init(day: .thursday, start: 5, end: 7, location: "建築製図室W9-511設計製図室")],
                 terms: [
                     .init(year: 2022, quarter: 1),
                     .init(year: 2022, quarter: 3)
