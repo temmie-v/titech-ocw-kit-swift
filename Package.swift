@@ -30,6 +30,9 @@ let package = Package(
             ]),
         .testTarget(
             name: "TitechOCWKitTests",
-            dependencies: ["TitechOCWKit"]),
+            dependencies: ["TitechOCWKit"],
+            resources: [
+                .process("HTML"),
+            ])
     ]
 )

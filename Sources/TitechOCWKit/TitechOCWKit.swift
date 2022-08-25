@@ -10,18 +10,36 @@ public enum TitechOCWError: Error {
 
 public struct TitechOCW {
     public static let defaultUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1"
-    private let urlSession: URLSession
+    private let httpClient: HTTPClient
     private let userAgent: String
     
+    
     public init(urlSession: URLSession = .shared, userAgent: String = TitechOCW.defaultUserAgent) {
-        self.urlSession = urlSession
+        self.httpClient = HTTPClientImpl(urlSession: urlSession)
         self.userAgent = userAgent
     }
+    
+    #if DEBUG
+    /// Mcck Test用
+    init(mockHTML: String) {
+        self.httpClient = HTTPClientMock(html: mockHTML)
+        self.userAgent = TitechOCW.defaultUserAgent
+    }
+    
+    #endif
 
     public func fetchOCWCourse(courseId: String) async throws -> OCWCourse {
-        let data = try await fetchData(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&JWC=\(courseId)")!)
+        var request = URLRequest(url: URL(string: "http://www.ocw.titech.ac.jp/index.php?module=General&action=T0300&JWC=\(courseId)")!)
+        request.allHTTPHeaderFields = [
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Encoding": "br, gzip, deflate",
+            "Accept-Language": "ja-jp",
+            "User-Agent" : userAgent
+        ]
+
+        let html = try await httpClient.fetch(request: request)
         
-        let doc: Document = try SwiftSoup.parse(String(data: data, encoding: .utf8) ?? "")
+        let doc: Document = try SwiftSoup.parse(html)
         
         let titleString = try doc
             .select("div.page-title-area h3")
@@ -84,30 +102,6 @@ public struct TitechOCW {
                 OCWCourseTerm(year: 2022, quarter: $0)
             }
         )
-    }
-    
-    func fetchData(url: URL) async throws -> Data {
-        var reqest = URLRequest(url: url)
-        reqest.allHTTPHeaderFields = [
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Encoding": "br, gzip, deflate",
-            "Accept-Language": "ja-jp",
-            "User-Agent" : userAgent
-        ]
-        #if canImport(FoundationNetworking)
-        return try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: reqest) { data, _, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: data ?? Data())
-                }
-            }.resume()
-        }
-        #else
-        let (data, _) = try await urlSession.data(for: reqest)
-        return data
-        #endif
     }
 }
 
