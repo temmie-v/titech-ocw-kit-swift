@@ -17,7 +17,7 @@ struct HTTPClientImpl: HTTPClient {
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: data ?? Data())
+                    continuation.resume(returning: String(data: data ?? Data(), encoding: .utf8) ?? "")
                 }
             }.resume()
         }
