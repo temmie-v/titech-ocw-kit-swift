@@ -1,11 +1,7 @@
-//
-//  File.swift
-//  
-//
-//  Created by nanashiki on 2022/08/25.
-//
-
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 protocol HTTPClient {
     func fetch(request: URLRequest) async throws -> String
