@@ -81,4 +81,21 @@ final class TitechOCWKitTests: XCTestCase {
             )
         )
     }
+    
+    func testFetchOCWCourseFor202202207() async throws {
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202202207", withExtension: "html")!)
+        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202202207")
+        
+        XCTAssertEqual(
+            course,
+            OCWCourse(
+                nameJa: "有機機能材料物理",
+                nameEn: "Organic Functional Materials Physics",
+                periods: [],
+                terms: [
+                    .init(year: 2022, quarter: 3)
+                ]
+            )
+        )
+    }
 }
