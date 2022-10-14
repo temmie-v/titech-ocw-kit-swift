@@ -126,7 +126,6 @@ public struct OCWCoursePeriod: Equatable, Codable {
 }
 
 public enum DayOfWeek: Int, Codable, CaseIterable, Equatable {
-    case unknown = 0
     case sunday = 1
     case monday = 2
     case tuesday = 3
@@ -151,27 +150,7 @@ public enum DayOfWeek: Int, Codable, CaseIterable, Equatable {
         } else if str.contains("土") {
             return .saturday
         } else {
-            return .unknown
-        }
-    }
-
-    static func generateFromEnglish(str: String) -> DayOfWeek {
-        if str.contains("Sun") {
-            return .sunday
-        } else if str.contains("Mon") {
-            return .monday
-        } else if str.contains("Tue") {
-            return .tuesday
-        } else if str.contains("Wed") {
-            return .wednesday
-        } else if str.contains("Thu") {
-            return .thursday
-        } else if str.contains("Fri") {
-            return .friday
-        } else if str.contains("Sat") {
-            return .saturday
-        } else {
-            return .unknown
+            fatalError()
         }
     }
 }
