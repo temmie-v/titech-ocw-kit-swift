@@ -6,6 +6,7 @@ import SwiftSoup
 import AsyncHTTPClient
 import NIOCore
 import NIOHTTP1
+import NIOFoundationCompat
 
 public enum TitechOCWError: Error {
     case invalidHTTPStatusCode(code: UInt)
@@ -33,8 +34,8 @@ public struct TitechOCW {
         let response = try await httpClient.execute(request, timeout: .seconds(90))
 
         if response.status == .ok {
-            var byteBuffer = try await response.body.collect(upTo: .max)
-            let data = byteBuffer.readData(length: byteBuffer.readableBytes)
+            let byteBuffer = try await response.body.collect(upTo: .max)
+            let data = byteBuffer.getData(at: 0, length: byteBuffer.readableBytes)
             let html = String(data: data ?? Data(), encoding: .utf8) ?? ""
             return try OCWHTMLPaser.parse(html: html)
         } else {
