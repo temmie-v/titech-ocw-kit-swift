@@ -1,10 +1,18 @@
 import XCTest
 @testable import TitechOCWKit
+import NIOCore
+// import NIOTransportServices
 
-final class TitechOCWKitTests: XCTestCase {
-    func testFetchOCWCourseFor202201977() async throws {
+final class OCWHTMLPaserTests: XCTestCase {
+//    func testParseFor202304063() async throws {
+//        let titechOCW = TitechOCW(eventLoopGroup: NIOTSEventLoopGroup())
+//        _ = try await titechOCW.fetchOCWCourse(courseId: "202304063")
+//        try await titechOCW.shutdown()
+//    }
+
+    func testParseFor202201977() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202201977", withExtension: "html")!)
-        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202201977")
+        let course = try OCWHTMLPaser.parse(html: html)
         
         XCTAssertEqual(
             course,
@@ -22,9 +30,9 @@ final class TitechOCWKitTests: XCTestCase {
         )
     }
     
-    func testFetchOCWCourseFor202206894() async throws {
+    func testParseFor202206894() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202206894", withExtension: "html")!)
-        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202206894")
+        let course = try OCWHTMLPaser.parse(html: html)
         
         XCTAssertEqual(
             course,
@@ -42,9 +50,9 @@ final class TitechOCWKitTests: XCTestCase {
         )
     }
     
-    func testFetchOCWCourseFor202200304() async throws {
+    func testParseFor202200304() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202200304", withExtension: "html")!)
-        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202200304")
+        let course = try OCWHTMLPaser.parse(html: html)
         
         XCTAssertEqual(
             course,
@@ -62,9 +70,9 @@ final class TitechOCWKitTests: XCTestCase {
         )
     }
 
-    func testFetchOCWCourseFor202202559() async throws {
+    func testParseFor202202559() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202202559", withExtension: "html")!)
-        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202202559")
+        let course = try OCWHTMLPaser.parse(html: html)
         
         XCTAssertEqual(
             course,
@@ -82,9 +90,9 @@ final class TitechOCWKitTests: XCTestCase {
         )
     }
     
-    func testFetchOCWCourseFor202202207() async throws {
+    func testParseFor202202207() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202202207", withExtension: "html")!)
-        let course = try await TitechOCW(mockHTML: html).fetchOCWCourse(courseId: "202202207")
+        let course = try OCWHTMLPaser.parse(html: html)
         
         XCTAssertEqual(
             course,
