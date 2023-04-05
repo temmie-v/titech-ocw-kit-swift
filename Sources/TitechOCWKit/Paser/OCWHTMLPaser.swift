@@ -70,7 +70,7 @@ enum OCWHTMLPaser {
             nameEn: titleArr[0][1],
             periods: periods,
             terms: quarters.map {
-                OCWCourseTerm(year: 2022, quarter: $0)
+                OCWCourseTerm(year: 2023, quarter: $0)
             }
         )
     }
