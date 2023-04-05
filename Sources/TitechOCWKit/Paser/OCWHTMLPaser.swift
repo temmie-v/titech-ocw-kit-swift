@@ -13,7 +13,7 @@ enum OCWHTMLPaser {
         let doc: Document = try SwiftSoup.parse(html)
         
         let courseYearString = courseId.prefix(4)
-        let courseYear = Int(courseYearString)!
+        let courseYear = Int(courseYearString) ?? -1
         
         let titleString = try doc
             .select("div.page-title-area h3")
