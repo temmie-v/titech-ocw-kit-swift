@@ -37,7 +37,7 @@ public struct TitechOCW {
             let byteBuffer = try await response.body.collect(upTo: .max)
             let data = byteBuffer.getData(at: 0, length: byteBuffer.readableBytes)
             let html = String(data: data ?? Data(), encoding: .utf8) ?? ""
-            return try OCWHTMLPaser.parse(html: html)
+            return try OCWHTMLPaser.parse(html: html, courseId: courseId)
         } else {
             throw TitechOCWError.invalidHTTPStatusCode(code: response.status.code)
         }
