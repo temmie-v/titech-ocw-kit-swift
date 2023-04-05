@@ -9,9 +9,12 @@ import Foundation
 import SwiftSoup
 
 enum OCWHTMLPaser {
-    static func parse(html: String) throws -> OCWCourse {
+    static func parse(html: String, courseId: String) throws -> OCWCourse {
         let doc: Document = try SwiftSoup.parse(html)
-
+        
+        let courseYearString = courseId.prefix(4)
+        let courseYear = Int(courseYearString)!
+        
         let titleString = try doc
             .select("div.page-title-area h3")
             .html()
@@ -70,7 +73,7 @@ enum OCWHTMLPaser {
             nameEn: titleArr[0][1],
             periods: periods,
             terms: quarters.map {
-                OCWCourseTerm(year: 2023, quarter: $0)
+                OCWCourseTerm(year: courseYear, quarter: $0)
             }
         )
     }

@@ -12,7 +12,7 @@ final class OCWHTMLPaserTests: XCTestCase {
 
     func testParseFor202201977() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202201977", withExtension: "html")!)
-        let course = try OCWHTMLPaser.parse(html: html)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202201977")
         
         XCTAssertEqual(
             course,
@@ -32,7 +32,7 @@ final class OCWHTMLPaserTests: XCTestCase {
     
     func testParseFor202206894() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202206894", withExtension: "html")!)
-        let course = try OCWHTMLPaser.parse(html: html)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202206894")
         
         XCTAssertEqual(
             course,
@@ -52,7 +52,7 @@ final class OCWHTMLPaserTests: XCTestCase {
     
     func testParseFor202200304() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202200304", withExtension: "html")!)
-        let course = try OCWHTMLPaser.parse(html: html)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202200304")
         
         XCTAssertEqual(
             course,
@@ -72,7 +72,7 @@ final class OCWHTMLPaserTests: XCTestCase {
 
     func testParseFor202202559() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202202559", withExtension: "html")!)
-        let course = try OCWHTMLPaser.parse(html: html)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202202559")
         
         XCTAssertEqual(
             course,
@@ -92,7 +92,7 @@ final class OCWHTMLPaserTests: XCTestCase {
     
     func testParseFor202202207() throws {
         let html = try! String(contentsOf: Bundle.module.url(forResource: "202202207", withExtension: "html")!)
-        let course = try OCWHTMLPaser.parse(html: html)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202202207")
         
         XCTAssertEqual(
             course,
