@@ -106,4 +106,21 @@ final class OCWHTMLPaserTests: XCTestCase {
             )
         )
     }
+    
+    func testParseFor202335143() throws {
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "202335143", withExtension: "html")!)
+        let course = try OCWHTMLPaser.parse(html: html, courseId: "202335143")
+        
+        XCTAssertEqual(
+            course,
+            OCWCourse(
+                nameJa: "世界を知る：ヨーロッパ 1",
+                nameEn: "Area Studies: Europe 1",
+                periods: [.init(day: .wednesday, start: 3, end: 4, location: "SL-101(S011)")],
+                terms: [
+                    .init(year: 2023, quarter: 1)
+                ]
+            )
+        )
+    }
 }

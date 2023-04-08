@@ -29,7 +29,7 @@ enum OCWHTMLPaser {
             .html()
             .trimmingCharacters(in: .whitespacesAndNewlines)
         
-        let periods = periodString.matches(of: #/(?<day>[日月火水木金土])(?<start>\d+)-(?<end>\d+)(?:\((?<location>[^)]*)\))?/#).map { match -> OCWCoursePeriod in
+        let periods = periodString.matches(of: #/(?<day>[日月火水木金土])(?<start>\d+)-(?<end>\d+)(?:\((?<location>[^()（）]+(\([^()（）]+\)[^()（）]*)*)\))?/#).map { match -> OCWCoursePeriod in
             OCWCoursePeriod(
                 day: DayOfWeek.generateFromJapanese(str: String(match.output.day)),
                 start: Int(String(match.output.start)) ?? -1,
