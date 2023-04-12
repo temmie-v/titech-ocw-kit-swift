@@ -28,7 +28,7 @@ enum OCWHTMLPaser {
             .select("dd.place")
             .html()
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        let periodRegexpResult = periodString.matches("([日月火水木金土])(\\d+)-(\\d+)(?:\\(([^)]*)\\))?") ?? []
+        let periodRegexpResult = periodString.matches("([日月火水木金土])(\\d+)-(\\d+)(?:\\(([^()（）]+(\\([^()（）]+\\)[^()（）]*)*)\\))?") ?? []
 
         let periods = periodRegexpResult.map { result -> OCWCoursePeriod in
             OCWCoursePeriod(
