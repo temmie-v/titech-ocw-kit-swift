@@ -31,7 +31,7 @@ public struct TitechOCW {
             ("User-Agent", userAgent)
         ])
 
-        let response = try await httpClient.execute(request, timeout: .seconds(90))
+        let response = try await httpClient.execute(request, timeout: .seconds(30))
 
         if response.status == .ok {
             let byteBuffer = try await response.body.collect(upTo: .max)
