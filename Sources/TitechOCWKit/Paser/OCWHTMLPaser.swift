@@ -44,12 +44,11 @@ enum OCWHTMLPaser {
         let termString = try dds[3].html().trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "Q", with: "")
 
         let quarters: [Int]
-
-        switch termString {
-        case _ where termString.contains("-"):
+        
+        if (termString.contains("-")) {
             let range = termString.split(separator: "-").compactMap { Int($0) }
             quarters = Array(range[0] ... range[1])
-        default:
+        } else {
             quarters = termString.split(separator: "・").compactMap { Int($0) }
         }
 
