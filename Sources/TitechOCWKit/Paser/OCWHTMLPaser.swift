@@ -8,6 +8,8 @@
 import Foundation
 import SwiftSoup
 
+// get: ocwId, courseNumber, name(J/E), year, startQ, endQ, departments, teacher(J/E)
+
 enum OCWHTMLPaser {
     static func parse(html: String, courseId: String) throws -> OCWCourse {
         let doc: Document = try SwiftSoup.parse(html)
@@ -24,22 +26,35 @@ enum OCWHTMLPaser {
             throw TitechOCWError.invalidOCWCourseHtml
         }
 
-        let periodString = try doc
-            .select("dd.place")
-            .html()
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+//        let periodString = try doc
+//            .select("dd.place")
+//            .html()
+//            .trimmingCharacters(in: .whitespacesAndNewlines)
+//        
+//        let periods = periodString.matches(of: #/(?<day>[日月火水木金土])(?<start>\d+)-(?<end>\d+)(?:\((?<location>[^()（）]+(\([^()（）]+\)[^()（）]*)*)\))?/#).map { match -> OCWCoursePeriod in
+//            OCWCoursePeriod(
+//                day: DayOfWeek.generateFromJapanese(str: String(match.output.day)),
+//                start: Int(String(match.output.start)) ?? -1,
+//                end: Int(String(match.output.end)) ?? -1,
+//                location: String(match.output.location ?? "")
+//            )
+//        }
         
-        let periods = periodString.matches(of: #/(?<day>[日月火水木金土])(?<start>\d+)-(?<end>\d+)(?:\((?<location>[^()（）]+(\([^()（）]+\)[^()（）]*)*)\))?/#).map { match -> OCWCoursePeriod in
-            OCWCoursePeriod(
-                day: DayOfWeek.generateFromJapanese(str: String(match.output.day)),
-                start: Int(String(match.output.start)) ?? -1,
-                end: Int(String(match.output.end)) ?? -1,
-                location: String(match.output.location ?? "")
-            )
+        let dep = try doc.select("dl dd")
+        let deps = try dep[0].html().trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let teachersdoc = try doc
+            .select("dl.clearfix dd a")
+        var teachers: [String] = []
+        for teacher in teachersdoc {
+            let teacherName = try teacher.html().trimmingCharacters(in: .whitespacesAndNewlines)
+            teachers.append(teacherName)
         }
-
+        
         let dds = try doc
             .select("dl.dl-para-l dd")
+        
+        let courseNumber = try dds[0].html().trimmingCharacters(in: .whitespacesAndNewlines)
         
         let termString = try dds[3].html().trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "Q", with: "")
 
@@ -53,12 +68,15 @@ enum OCWHTMLPaser {
         }
 
         return OCWCourse(
-            nameJa: String(titleMatch.output.ja),
-            nameEn: String(titleMatch.output.en),
-            periods: periods,
-            terms: quarters.map {
-                OCWCourseTerm(year: courseYear, quarter: $0)
-            }
+            ocwId: Int(courseId) ?? -1,
+            courseNumber: courseNumber,
+            titleJa: String(titleMatch.output.ja),
+            titleEn: String(titleMatch.output.en),
+            year: courseYear,
+            startQuarter: quarters.min() ?? 1,
+            endQuarter: quarters.max() ?? 4,
+            teachers: teachers,
+            departments: [deps]
         )
     }
 }
